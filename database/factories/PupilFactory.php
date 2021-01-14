@@ -19,7 +19,7 @@ use Faker\Generator as Faker;
 $factory->define(Pupil::class, function (Faker $faker) {
     return [
         'fullname' => $faker->name,
-        'mobile_phone' => $faker->unique()->phoneNumber,
+        'mobile_phone' => $faker->unique()->numerify('79#########'),
         'email' => $faker->unique()->safeEmail,
         'address' => $faker->address,
     ];
