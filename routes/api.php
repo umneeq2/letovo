@@ -17,5 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('api')->namespace('\App\Http\Controllers\Api')->group(function () {
     Route::prefix('/pupils')->group(function () {
         Route::get('/list', 'PupilsController@index');
+        Route::post('/normalize/{id}', 'PupilsController@normalize');
     });
 });

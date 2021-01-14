@@ -14,60 +14,59 @@
         <loading v-if="loading"></loading>
         <div v-else>
             <div v-if="pupils.length">
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">ФИО</th>
-                            <th scope="col">Мобильный&nbsp;телефон</th>
-                            <th scope="col">E-mail</th>
-                            <th scope="col">Адрес проживания</th>
-                            <th scope="col">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="pupil in pupils" :key="pupil.id">
-                            <td>{{ pupil.id }}</td>
-                            <td>{{ pupil.fullname }}</td>
-                            <td>{{ pupil.mobile_phone }}</td>
-                            <td>{{ pupil.email }}</td>
-                            <td>{{ pupil.address }}</td>
-                            <td>
-                                <div
-                                    class="btn-group btn-group-sm"
-                                    role="group"
-                                    aria-label="Basic example"
-                                >
-                                    <router-link
-                                        :to="`/pupil/${pupil.id}`"
-                                        class="btn"
-                                        title="Просмотр"
-                                    >
-                                        <i class="icon-eye text-primary"></i>
-                                    </router-link>
-                                    <router-link
-                                        :to="`/pupil/update/${pupil.id}`"
-                                        class="btn"
-                                        title="Редактировать"
-                                    >
-                                        <i
-                                            class="icon-pencil3 text-success"
-                                        ></i>
-                                    </router-link>
-                                    <a
-                                        to="#"
-                                        class="btn"
-                                        title="Удалить"
-                                        @click.prevent="destroy(pupil.id)"
-                                    >
-                                        <i class="icon-cross3 text-danger"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
+                <div v-for="pupil in pupils" :key="pupil.id" class="card mb-4">
+                    <div class="card-header">
+                        {{ "ID: #" + pupil.id + ", " + pupil.fullname }}
+                    </div>
+                    <div class="card-body">
+                        E-mail: {{ pupil.email }}<br />
+                        Мобильный телефон: {{ pupil.mobile_phone }}<br />
+                        Адрес проживания: {{ pupil.address }}<br />
+                        <span v-show="pupil.address_normalized"
+                            >Нормализованный адрес проживания:
+                            {{ pupil.address_normalized }}<br
+                        /></span>
+                        <span v-show="pupil.geo_lat"
+                            >Широта: {{ pupil.geo_lat }}<br
+                        /></span>
+                        <span v-show="pupil.geo_lon"
+                            >Долгота: {{ pupil.geo_lon }}<br
+                        /></span>
+                    </div>
+                    <div class="card-footer">
+                        <button
+                            v-show="
+                                !pupil.geo_lon &&
+                                    !pupil.geo_lat &&
+                                    !pupil.address_normalized
+                            "
+                            class="btn btn-sm btn-secondary"
+                            @click.prevent="normalize(pupil.id)"
+                            :ref="`btn-normalize-${pupil.id}`"
+                        >
+                            Нормализация / обогащение
+                        </button>
+                        <router-link
+                            :to="`/pupil/${pupil.id}`"
+                            class="btn btn-sm btn-primary"
+                        >
+                            Просмотр
+                        </router-link>
+                        <router-link
+                            :to="`/pupil/update/${pupil.id}`"
+                            class="btn btn-sm btn-success"
+                        >
+                            Редактировать
+                        </router-link>
+                        <a
+                            to="#"
+                            class="btn btn-sm btn-danger"
+                            @click.prevent="destroy(pupil.id)"
+                        >
+                            Удалить
+                        </a>
+                    </div>
+                </div>
                 <pagination
                     :meta="meta"
                     @refresh-page="changePage"
@@ -136,6 +135,29 @@ export default {
                 .catch(function(error) {})
                 .finally(response => {
                     self.loading = false;
+                });
+        },
+        normalize(id) {
+            const self = this;
+
+            self.$refs[`btn-normalize-${id}`][0].disabled = true;
+
+            axios
+                .post(`/api/pupils/normalize/${id}`)
+                .then(response => {
+                    _.each(self.pupils, function(item, i) {
+                        if (item.id === id) {
+                            item.address_normalized =
+                                response.data.address_normalized;
+                            item.geo_lat = response.data.geo_lat;
+                            item.geo_lon = response.data.geo_lon;
+                            return false;
+                        }
+                    });
+                })
+                .catch(function(error) {})
+                .finally(response => {
+                    self.$refs[`btn-normalize-${id}`][0].disabled = false;
                 });
         },
         destroy(id) {
