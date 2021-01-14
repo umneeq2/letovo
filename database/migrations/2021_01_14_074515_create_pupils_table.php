@@ -19,6 +19,7 @@ class CreatePupilsTable extends Migration
             $table->string('mobile_phone', 20)->unique();
             $table->string('email', 100)->unique();
             $table->string('address', 200);
+            $table->string('address_normalized', 200)->nullable();
             // range from -90 to 90 for latitude and -180 to 180 for longitude
             $table->float('geo_lon', 11, 8)->nullable(); // https://dadata.ru/api/clean/address/#response
             $table->float('geo_lat', 11, 9)->nullable();

@@ -12,6 +12,6 @@ class Pupil extends Model
      * @var array
      */
     protected $fillable = [
-        'fullname', 'mobile_phone', 'email', 'address', 'geo_lat', 'geo_lon'
+        'fullname', 'mobile_phone', 'email', 'address', 'address_normalized', 'geo_lat', 'geo_lon'
     ];
 }

@@ -1,6 +1,15 @@
 <template>
     <div class="container">
-        <h1 class="mb-4">Список учеников</h1>
+        <div class="d-flex justify-content-between">
+            <div>
+                <h1 class="mb-4">Список учеников</h1>
+            </div>
+            <div>
+                <router-link class="btn btn-success mb-3" to="/pupil/create"
+                    >Добавить</router-link
+                >
+            </div>
+        </div>
 
         <loading v-if="loading"></loading>
         <div v-else>
@@ -13,6 +22,7 @@
                             <th scope="col">Мобильный&nbsp;телефон</th>
                             <th scope="col">E-mail</th>
                             <th scope="col">Адрес проживания</th>
+                            <th scope="col">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -22,6 +32,38 @@
                             <td>{{ pupil.mobile_phone }}</td>
                             <td>{{ pupil.email }}</td>
                             <td>{{ pupil.address }}</td>
+                            <td>
+                                <div
+                                    class="btn-group btn-group-sm"
+                                    role="group"
+                                    aria-label="Basic example"
+                                >
+                                    <router-link
+                                        :to="`/pupil/${pupil.id}`"
+                                        class="btn"
+                                        title="Просмотр"
+                                    >
+                                        <i class="icon-eye text-primary"></i>
+                                    </router-link>
+                                    <router-link
+                                        :to="`/pupil/update/${pupil.id}`"
+                                        class="btn"
+                                        title="Редактировать"
+                                    >
+                                        <i
+                                            class="icon-pencil3 text-success"
+                                        ></i>
+                                    </router-link>
+                                    <a
+                                        to="#"
+                                        class="btn"
+                                        title="Удалить"
+                                        @click.prevent="destroy(pupil.id)"
+                                    >
+                                        <i class="icon-cross3 text-danger"></i>
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -95,6 +137,14 @@ export default {
                 .finally(response => {
                     self.loading = false;
                 });
+        },
+        destroy(id) {
+            const self = this;
+            if (confirm("Точно удалить ученика?")) {
+                axios.delete(`/api/pupils/${id}`).then(function(response) {
+                    self.sendRequest();
+                });
+            }
         }
     }
 };
