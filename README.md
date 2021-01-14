@@ -7,3 +7,11 @@
 -   Реализовать REST API (CRUD) с описанием на Swagger для созданой таблице БД;
 -   Фреймворк Laravel v6+;
 -   Создать репозиторий GIT проекта, прислать ссылку на репозиторий и ссылку на рабочий прототип API.
+
+#### Развёртывание:
+
+1. git clone
+2. .env
+3. php artisan key:generate
+4. php artisan migrate --seed
+5.
