@@ -11,7 +11,10 @@
 #### Развёртывание:
 
 1. git clone
-2. .env
+2. .env.example copy to .env
 3. php artisan key:generate
 4. php artisan migrate --seed
-5.
+5. yarn
+6. npm run dev
+
+Done!
