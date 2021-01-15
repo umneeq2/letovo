@@ -87,7 +87,8 @@ export default {
             const self = this;
             if (confirm("Точно удалить ученика?")) {
                 axios.delete(`/api/pupils/${id}`).then(function(response) {
-                    self.sendRequest();
+                    alert("Ученик удалён.");
+                    self.$router.go();
                 });
             }
         }
