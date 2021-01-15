@@ -40,7 +40,7 @@ class PupilsController extends Controller
         if ($pupil) {
             return response(['id' => $pupil->id]);
         } else {
-            throw new \Exception("Ошибка сохранения Ученика.");
+            return response('Ошибка сохранения ученика.', Response::HTTP_NOT_ACCEPTABLE);
         }
     }
 
@@ -55,7 +55,7 @@ class PupilsController extends Controller
         $pupil = PupilModel::find($id);
 
         if (!$pupil) {
-            throw new NotFoundHttpException("Ученик не найден.");
+            return response('Ученик не найден.', Response::HTTP_NOT_FOUND);
         }
 
         return new PupilResource($pupil);
@@ -73,7 +73,7 @@ class PupilsController extends Controller
         if ($pupil->update($request->all())) {
             return response(['id' => $pupil->id]);
         } else {
-            throw new \Exception("Ошибка сохранения Ученика.");
+            return response('Ошибка сохранения ученика.', Response::HTTP_NOT_ACCEPTABLE);
         }
     }
 
@@ -88,7 +88,7 @@ class PupilsController extends Controller
         if ($pupil->delete()) {
             return response(['id' => $pupil->id]);
         } else {
-            throw new \Exception("Ошибка удаления Ученика.");
+            return response('Ошибка удаления ученика.', Response::HTTP_NOT_ACCEPTABLE);
         }
     }
 
@@ -103,7 +103,7 @@ class PupilsController extends Controller
     {
         $pupil = PupilModel::find($id);
         if (!$pupil) {
-            throw new \Exception("Ученик не найден.");
+            return response('Ученик не найден.', Response::HTTP_NOT_FOUND);
         }
 
         $dadata = new \Dadata\DadataClient(env('DADATA_TOKEN'), env('DADATA_SECRET'));
@@ -116,7 +116,7 @@ class PupilsController extends Controller
             $pupil->geo_lon = $dadata_response["geo_lon"];
 
             if (!$pupil->save()) {
-                throw new \Exception("Не могу сохранить данные Ученика.");
+                return response('Не могу сохранить данные ученика.', Response::HTTP_NOT_ACCEPTABLE);
             }
 
             return response([
