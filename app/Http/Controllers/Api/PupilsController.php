@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Pupil as PupilModel;
 use App\Http\Resources\Pupil as PupilResource;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PupilsController extends Controller
 {
@@ -52,7 +53,13 @@ class PupilsController extends Controller
      */
     public function show($id)
     {
-        //
+        $pupil = PupilModel::find($id);
+
+        if (!$pupil) {
+            throw new NotFoundHttpException("Ученик не найден.");
+        }
+
+        return new PupilResource($pupil);
     }
 
     /**
