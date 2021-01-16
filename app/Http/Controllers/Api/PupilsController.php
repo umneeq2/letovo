@@ -8,12 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\Pupil as PupilModel;
 use App\Http\Resources\Pupil as PupilResource;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PupilsController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Выводит постранично список учеников
      *
      * @return \Illuminate\Http\Response
      */
@@ -25,7 +24,7 @@ class PupilsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Сохраняет нового ученика в хранилище
      *
      * @param  App\Http\Requests\PupilCreateUpdateRequest $request
      * @return \Illuminate\Http\Response
@@ -45,7 +44,7 @@ class PupilsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Выводит ученика по ID
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -62,14 +61,18 @@ class PupilsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Принимает запрос на редактирование ученика
      *
      * @param  App\Http\Requests\PupilCreateUpdateRequest $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PupilCreateUpdateRequest $request, PupilModel $pupil)
+    public function update(PupilCreateUpdateRequest $request, int $id)
     {
+        $pupil = PupilModel::find($id);
+        if (!$pupil) {
+            return response('Ученик не найден', Response::HTTP_NOT_FOUND);
+        }
         if ($pupil->update($request->all())) {
             return response(['id' => $pupil->id]);
         } else {
@@ -78,9 +81,9 @@ class PupilsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удаляет выбранного ученика
      *
-     * @param  PupilModel $pupil
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(int $id)
