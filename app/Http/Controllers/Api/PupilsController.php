@@ -83,8 +83,12 @@ class PupilsController extends Controller
      * @param  PupilModel $pupil
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PupilModel $pupil)
+    public function destroy(int $id)
     {
+        $pupil = PupilModel::find($id);
+        if (!$pupil) {
+            return response('Ученик не найден', Response::HTTP_NOT_FOUND);
+        }
         if ($pupil->delete()) {
             return response(['id' => $pupil->id]);
         } else {
